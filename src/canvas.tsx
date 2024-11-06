@@ -1,8 +1,9 @@
 import exp from "constants";
 import { useRef, useState, useEffect } from "react";
 import Draw from "./draw";
-import Erase from "./erase";
+import DynamicDraw from "./dynamicdraw";
 import Highlight from "./highlight";
+import Erase from "./erase";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -110,12 +111,14 @@ const Canvas = () => {
 
             <div className="menu">
                 <div className="tool-select">
-                    <span onClick={() => setCurrentTool("draw")}>Draw</span>
-                    <span onClick={() => setCurrentTool("erase")}>Erase</span>
-                    <span onClick={() => setCurrentTool("highlight")}>Highlight</span>
+                    <span onClick={() => setCurrentTool("draw")}>P</span>
+                    <span onClick={() => setCurrentTool("dynamicDraw")}>FP</span>
+                    <span onClick={() => setCurrentTool("highlight")}>HL</span>
+                    <span onClick={() => setCurrentTool("erase")}>E</span>
                 </div>
 
                 <Draw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Draw>
+                <DynamicDraw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></DynamicDraw>
                 <Erase {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Erase>
                 <Highlight {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Highlight>
             </div>

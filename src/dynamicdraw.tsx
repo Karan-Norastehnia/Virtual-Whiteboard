@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 
-const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
+const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
     const [hueValue, setHueValue] = useState(220);
     const [saturationValue, setSaturationValue] = useState(100);
-    const [lightnessValue, setLightnessValue] = useState(30);
+    const [lightnessValue, setLightnessValue] = useState(5);
     const [widthValue, setWidthValue] = useState(2);
-    const [smoothnessValue, setSmoothnessValue] = useState(0.1);
+    const [smoothnessValue, setSmoothnessValue] = useState(0.4);
 
     useEffect(() => {
         const canvas = canvasRef.current;
 
-        if (canvas && currentTool === "draw") {
+        if (canvas && currentTool === "dynamicDraw") {
             const context = canvas.getContext("2d");
             const bounds = canvas.getBoundingClientRect();
 
@@ -23,7 +23,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
             if (context && mouseDown && mouseOnCanvas) {
                 context.globalCompositeOperation = "source-over";
                 context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
-                context.lineWidth = widthValue;
+                context.lineWidth = Math.min(Math.max(widthValue * (30 / dist + 1), widthValue), widthValue * 2);
                 context.lineCap = "round";
                 context.lineJoin = "round";
                 context.beginPath();
@@ -37,7 +37,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
     }, [x, y, mouseDown]);
 
     return (
-        <div style={{display: currentTool === "draw" ? "block" : "none"}}>
+        <div style={{display: currentTool === "dynamicDraw" ? "block" : "none"}}>
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Colour</span>
@@ -81,14 +81,14 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
                         <div>Width</div>
                         <input type="range" 
                             onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                            min={1} max={50} defaultValue={widthValue} id="width" />
+                            min={2} max={10} defaultValue={widthValue} id="width" />
                     </div>
 
                     <div className="slider">
                         <div>Smoothness</div>
                         <input type="range" 
                             onChange={(event) => {setSmoothnessValue(Number(event.target.value))}} 
-                            min={0} max={0.9} step={0.1} defaultValue={smoothnessValue} id="smoothness" />
+                            min={0.3} max={0.9} step={0.1} defaultValue={smoothnessValue} id="smoothness" />
                     </div>
                 </div>
             </div>
@@ -96,4 +96,4 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
     );
 };
 
-export default Draw;
+export default DynamicDraw;

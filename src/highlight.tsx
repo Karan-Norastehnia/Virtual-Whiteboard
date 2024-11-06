@@ -18,12 +18,11 @@ const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y
 
             if (context && mouseDown && mouseOnCanvas) {
                 context.globalCompositeOperation = "source-over";
-                // context.globalAlpha = 0.5;
-                context.beginPath();
                 context.strokeStyle = `hsla(${hueValue}, ${saturationValue}%, ${lightnessValue}%, 0.5)`;
                 context.lineWidth = widthValue;
                 context.lineCap = "butt";
                 context.lineJoin = "round";
+                context.beginPath();
                 context.moveTo(prevPos.current.x - bounds.x, prevPos.current.y - bounds.y);
                 context.lineTo(x - bounds.x, y - bounds.y);
                 context.stroke();
