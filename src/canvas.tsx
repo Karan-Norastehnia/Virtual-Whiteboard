@@ -1,20 +1,28 @@
 import exp from "constants";
-import { useRef, useState, useEffect, useLayoutEffect } from "react";
+import { useRef, useState, useEffect } from "react";
+import Draw from "./draw";
+import Erase from "./erase";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const gridRef = useRef<HTMLCanvasElement | null>(null);
+
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [mouseDown, setMouseDown] = useState(false);
 
     const prevPos = useRef({ prevX: x, prevY: y });
 
-    const [hueValue, setHueValue] = useState(0);
-    const [saturationValue, setSaturationValue] = useState(0);
-    const [lightnessValue, setLightnessValue] = useState(0);
-    const [widthValue, setWidthValue] = useState(2);
+    const [mouseOnCanvas, setMouseOnCanvas] = useState(false);
+    const [currentTool, setCurrentTool] = useState("draw");
+    const [size, setSize] = useState(2);
+
+    const width = 2048;
+    const height = 2048;
 
     useEffect(() => {
+        drawGrid();
+
         const handleMouseDown = (event: MouseEvent) => {
             if (event.button === 0) {
                 setMouseDown(true);
@@ -41,51 +49,31 @@ const Canvas = () => {
         };
     }, []);
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        
+    const drawGrid = () => {
+        const canvas = gridRef.current;
+
         if (canvas) {
             const context = canvas.getContext("2d");
-            if (context && mouseDown) {
+
+            if (context) {
                 context.beginPath();
-                context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
-                context.lineWidth = widthValue;
-                context.moveTo(prevPos.current.prevX, prevPos.current.prevY);
-                context.lineTo(x, y);
-                context.stroke();                    
+                context.lineWidth = 1;
+                context.strokeStyle = "hsl(0, 0%, 88%)";
+
+                for (let i = 0; i <= height; i += 64) {
+                    context.moveTo(i, 0);
+                    context.lineTo(i, height);
+                }
+
+                for (let i = 0; i <= width; i += 64) {
+                    context.moveTo(0, i);
+                    context.lineTo(width, i);
+                }
+
+                context.stroke();
             }
         }
-
-        prevPos.current = { prevX: x, prevY: y};
-    }, [x, y, mouseDown]);
-
-    useLayoutEffect(() => {
-        const canvas = canvasRef.current;
-        if (canvas) {
-            const resizeCanvas = () => {
-                // Save current canvas content
-                const dataUrl = canvas.toDataURL();
-                
-                // Update canvas size
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
-                // Restore the saved content
-                const context = canvas.getContext("2d");
-                if (context) {
-                    const img = new Image();
-                    img.src = dataUrl;
-                    img.onload = () => {
-                        context.drawImage(img, 0, 0);
-                    };
-                }
-            };
-
-            resizeCanvas();
-            window.addEventListener("resize", resizeCanvas);
-            return () => window.removeEventListener("resize", resizeCanvas);
-        }
-    }, []);
+    };
 
     const expand = (event: React.MouseEvent) => {
         const target = event.target as HTMLElement;
@@ -111,62 +99,25 @@ const Canvas = () => {
 
     return (
         <>
-            <div className="menu">
-                <div className="section">
-                    <div onClick={expand} className="title">
-                        <span>Colour</span>
-                        <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                    </div>
-
-                    <div className="content">
-                        <div className="slider">
-                            <div>Hue</div>
-                            <input type="range" 
-                                onChange={(event) => {setHueValue(Number(event.target.value))}} 
-                                min={0} max={255} id="hue" />
-                        </div>
-
-                        <div className="slider">
-                            <div>Saturation</div>
-                            <input type="range" 
-                                onChange={(event) => {setSaturationValue(Number(event.target.value))}} 
-                                min={0} max={100} id="saturation" />
-                        </div>
-
-                        <div className="slider">
-                            <div>Lightness</div>
-                            <input type="range" 
-                                onChange={(event) => {setLightnessValue(Number(event.target.value))}} 
-                                min={0} max={100} id="lightness" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="section">
-                    <div onClick={expand} className="title">
-                        <span>Stroke</span>
-                        <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                    </div>
-
-                    <div className="content">
-                        <div className="slider">
-                            <div>Width</div>
-                            <input type="range" 
-                                onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                                min={1} max={10} id="width" />
-                        </div>
-
-                        <div className="slider">
-                            <div>Smoothness</div>
-                            <input type="range" min={0} max={100} id="smoothness" />
-                        </div>
-                    </div>
-                </div>
-
-                <div>{}</div>
+            <div className="canvas-container">
+                <canvas ref={gridRef} width={width} height={height} id="grid-canvas"></canvas>
+                <canvas ref={canvasRef} 
+                    onMouseLeave={() => setMouseOnCanvas(false)} 
+                    onMouseOver={() => setMouseOnCanvas(true)} 
+                    width={width} height={height} id="main"></canvas>
             </div>
 
-            <canvas ref={canvasRef} id="main"></canvas>
+            <div className="menu">
+                <div className="tool-select">
+                    <span onClick={() => setCurrentTool("draw")}>Draw</span>
+                    <span onClick={() => setCurrentTool("erase")}>Erase</span>
+                </div>
+
+                <Draw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Draw>
+                <Erase {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, x, y, expand, currentTool }}></Erase>
+            </div>
+
+            <div className="cursor" style={{top: y, left: x, padding: size / 2, borderRadius: currentTool === "erase" ? "0" : "50%"}}></div>
         </>
     );
 };

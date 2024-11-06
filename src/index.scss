@@ -14,10 +14,64 @@ html, body {
   font-family: "Quicksand", Verdana, sans-serif;
 }
 
-.menu {
+canvas {
   position: absolute;
-  background-color: hsl(0, 0%, 94%);
-  box-shadow: 2px 2px 6px hsl(0, 0%, 85%);
+  display: block;
+  // margin: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 0.8px;
+  border-color: hsl(0, 0%, 85%);
+  overflow: scroll;
+
+  &:hover {
+    cursor: none;
+  }
+}
+
+.canvas-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+
+.cursor {
+  position: fixed;
+  box-shadow: 0 0 3px hsla(0, 0, 80%, 0.4);
+  border-style: solid;
+  border-width: 0.8px;
+  border-color: hsl(0, 0%, 30%);
+  transform: translate(-50%, -50%);
+  // padding: 50px;
+  pointer-events: none;
+}
+
+.tool-select {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  
+  span {
+    border-style: solid;
+    border-width: 0.8px;
+    border-radius: 25px;
+    border-color: hsla(0, 0%, 10%, 0);
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      border-color: hsl(0, 0%, 10%);
+    }
+  }
+}
+
+.menu {
+  position: fixed;
+  background-color: hsl(0, 0%, 98%);
+  box-shadow: 2px 2px 6px hsla(0, 0%, 10%, 0.1);
   top: 50%;
   left: 50px;
   transform: translateY(-50%);
@@ -44,12 +98,37 @@ html, body {
   cursor: pointer;
 }
 
+.colour-wheel-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 0.8px;
+  background-color: hsl(220, 100%, 30%);
+  border-color: hsla(0, 0%, 10%, 0);
+  // box-shadow: 4px 4px 0 hsl(0, 0%, 80%);
+  margin: 10px 6px 15px auto;
+  cursor: pointer;
+
+  &:hover {
+    border-color: hsl(0, 0%, 10%);
+    // padding: 5px;
+    // box-shadow: 3px 3px 0 hsl(0, 0%, 80%);
+    // border-width: 5px;
+  }
+}
+
 .slider {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 30px;
   margin-top: 5px;
+
+  div {
+    font-size: 0.9em;
+    color: hsl(0, 0%, 25%);
+  }
 }
 
 input[type="range"] {
@@ -74,7 +153,7 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -5.2px;
-  background-color: hsl(0, 0%, 94%);
+  background-color: hsl(0, 0%, 98%);
   border-style: solid;
   border-radius: 50%;
   border-width: 0.8px;
@@ -90,7 +169,7 @@ input[type="range"]::-moz-range-track {
 }
 
 input[type="range"]::-moz-range-thumb {
-  background-color: hsl(0, 0%, 94%);
+  background-color: hsl(0, 0%, 98%);
   border: none;
   border-style: solid;
   border-radius: 50%;
@@ -100,26 +179,20 @@ input[type="range"]::-moz-range-thumb {
   width: 11px;
 }
 
-.slider div {
-  font-size: 0.9em;
-  color: hsl(0, 0%, 25%);
-}
-
 .content {
   overflow: hidden;
-  max-height: 500px;
-  transition: all 1.2s;
-}
+  // max-height: fit-content;
+  // transition: all 1.5s;
 
-.content.condense {
-  max-height: 0;
-  transition: all 0.25s;
+  &.condense {
+    max-height: 0;
+    // transition: all 0.4s;
+  }
 }
 
 svg {
   transition: all 0.25s;
-}
-
-svg.condense {
-  transform: rotate(180deg);
+  &.condense {
+    transform: rotate(180deg);
+  }
 }
