@@ -1,21 +1,31 @@
 import { useEffect, useState } from "react";
 
-const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, x, y, expand, currentTool }) => {
-    const [sizeValue, setSizeValue] = useState(10);
+const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
+    const [widthValue, setWidthValue] = useState(10);
 
     useEffect(() => {
         const canvas = canvasRef.current;
 
-        
         if (canvas && currentTool === "erase") {
             const context = canvas.getContext("2d");
             const bounds = canvas.getBoundingClientRect();
 
-            setSize(sizeValue);
+            setSize(widthValue);
             
             if (context && mouseDown && mouseOnCanvas) {
-                context.clearRect(x - bounds.x - (sizeValue / 2), y - bounds.y - (sizeValue / 2), sizeValue, sizeValue);
+                // context.clearRect(x - bounds.x - (widthValue / 2), y - bounds.y - (widthValue / 2), widthValue, widthValue);
+                context.globalCompositeOperation = "destination-out";
+                context.beginPath();
+                context.strokeStyle = "hsl(0, 0%, 0%)";
+                context.lineWidth = widthValue;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+                context.moveTo(prevPos.current.x - bounds.x, prevPos.current.y - bounds.y);
+                context.lineTo(x - bounds.x, y - bounds.y);
+                context.stroke();
             }
+
+            prevPos.current = { x: x, y: y };
         }
     }, [x, y, mouseDown]);
 
@@ -31,7 +41,7 @@ const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, x, y, expand, cur
                     <div className="slider">
                         <div>Size</div>
                         <input type="range" 
-                            onChange={(event) => {setSizeValue(Number(event.target.value))}} 
+                            onChange={(event) => {setWidthValue(Number(event.target.value))}} 
                             min={5} max={100} defaultValue={15} id="hue" />
                     </div>
                 </div>

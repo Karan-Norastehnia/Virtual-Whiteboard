@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
-    const [hueValue, setHueValue] = useState(220);
+const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
+    const [hueValue, setHueValue] = useState(60);
     const [saturationValue, setSaturationValue] = useState(100);
-    const [lightnessValue, setLightnessValue] = useState(30);
-    const [widthValue, setWidthValue] = useState(2);
+    const [lightnessValue, setLightnessValue] = useState(60);
+    const [widthValue, setWidthValue] = useState(20);
     const [smoothnessValue, setSmoothnessValue] = useState(10);
 
     useEffect(() => {
         const canvas = canvasRef.current;
 
-        if (canvas && currentTool === "draw") {
+        if (canvas && currentTool === "highlight") {
             const context = canvas.getContext("2d");
             const bounds = canvas.getBoundingClientRect();
 
@@ -18,10 +18,11 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
 
             if (context && mouseDown && mouseOnCanvas) {
                 context.globalCompositeOperation = "source-over";
+                // context.globalAlpha = 0.5;
                 context.beginPath();
-                context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
+                context.strokeStyle = `hsla(${hueValue}, ${saturationValue}%, ${lightnessValue}%, 0.5)`;
                 context.lineWidth = widthValue;
-                context.lineCap = "round";
+                context.lineCap = "butt";
                 context.lineJoin = "round";
                 context.moveTo(prevPos.current.x - bounds.x, prevPos.current.y - bounds.y);
                 context.lineTo(x - bounds.x, y - bounds.y);
@@ -33,7 +34,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
     }, [x, y, mouseDown]);
 
     return (
-        <div style={{display: currentTool === "draw" ? "block" : "none"}}>
+        <div style={{display: currentTool === "highlight" ? "block" : "none"}}>
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Colour</span>
@@ -41,7 +42,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
                 </div>
 
                 <div className="content">
-                    <div className="colour-wheel-button" style={{backgroundColor: `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`}}></div>
+                    <div className="colour-wheel-button" style={{backgroundColor: `hsla(${hueValue}, ${saturationValue}%, ${lightnessValue}%, 0.5)`}}></div>
 
                     <div className="slider">
                         <div>Hue</div>
@@ -77,14 +78,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
                         <div>Width</div>
                         <input type="range" 
                             onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                            min={1} max={50} defaultValue={widthValue} id="width" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Smoothness</div>
-                        <input type="range" 
-                            onChange={(event) => {setSmoothnessValue(Number(event.target.value))}} 
-                            min={0} max={100} defaultValue={smoothnessValue} id="smoothness" />
+                            min={10} max={100} defaultValue={widthValue} id="width" />
                     </div>
                 </div>
             </div>
@@ -92,4 +86,4 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
     );
 };
 
-export default Draw;
+export default Highlight;

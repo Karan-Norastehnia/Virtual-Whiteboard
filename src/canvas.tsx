@@ -2,6 +2,7 @@ import exp from "constants";
 import { useRef, useState, useEffect } from "react";
 import Draw from "./draw";
 import Erase from "./erase";
+import Highlight from "./highlight";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -11,7 +12,7 @@ const Canvas = () => {
     const [y, setY] = useState(0);
     const [mouseDown, setMouseDown] = useState(false);
 
-    const prevPos = useRef({ prevX: x, prevY: y });
+    const prevPos = useRef({ x: x, y: y });
 
     const [mouseOnCanvas, setMouseOnCanvas] = useState(false);
     const [currentTool, setCurrentTool] = useState("draw");
@@ -111,13 +112,15 @@ const Canvas = () => {
                 <div className="tool-select">
                     <span onClick={() => setCurrentTool("draw")}>Draw</span>
                     <span onClick={() => setCurrentTool("erase")}>Erase</span>
+                    <span onClick={() => setCurrentTool("highlight")}>Highlight</span>
                 </div>
 
                 <Draw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Draw>
-                <Erase {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, x, y, expand, currentTool }}></Erase>
+                <Erase {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Erase>
+                <Highlight {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Highlight>
             </div>
 
-            <div className="cursor" style={{top: y, left: x, padding: size / 2, borderRadius: currentTool === "erase" ? "0" : "50%"}}></div>
+            <div className="cursor" style={{top: y, left: x, display: mouseOnCanvas ? "block" : "none", padding: size / 2}}></div>
         </>
     );
 };
