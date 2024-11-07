@@ -5,7 +5,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
     const [saturationValue, setSaturationValue] = useState(100);
     const [lightnessValue, setLightnessValue] = useState(30);
     const [widthValue, setWidthValue] = useState(2);
-    const [smoothnessValue, setSmoothnessValue] = useState(0.1);
+    const [smoothnessValue, setSmoothnessValue] = useState(0);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -41,7 +41,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Colour</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
                 </div>
 
                 <div className="content">
@@ -73,7 +73,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Stroke</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
                 </div>
 
                 <div className="content">

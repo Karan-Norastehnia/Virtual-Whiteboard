@@ -1,9 +1,12 @@
-import exp from "constants";
 import { useRef, useState, useEffect } from "react";
 import Draw from "./draw";
 import DynamicDraw from "./dynamicdraw";
 import Highlight from "./highlight";
 import Erase from "./erase";
+import { ReactComponent as PenIcon } from "./icons/pen.svg";
+import { ReactComponent as InkPenIcon } from "./icons/inkpen.svg";
+import { ReactComponent as HighlighterIcon } from "./icons/highlighter.svg";
+import { ReactComponent as EraserIcon } from "./icons/eraser.svg";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -99,6 +102,8 @@ const Canvas = () => {
         }
     };
 
+    const properties = { setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool };
+
     return (
         <>
             <div className="canvas-container">
@@ -111,16 +116,27 @@ const Canvas = () => {
 
             <div className="menu">
                 <div className="tool-select">
-                    <span onClick={() => setCurrentTool("draw")}>P</span>
-                    <span onClick={() => setCurrentTool("dynamicDraw")}>FP</span>
-                    <span onClick={() => setCurrentTool("highlight")}>HL</span>
-                    <span onClick={() => setCurrentTool("erase")}>E</span>
+                    <span className={currentTool === "draw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("draw")}>
+                        {/* <img src={PenIcon} alt="Pen" /> */}
+                        <PenIcon />
+                    </span>
+                    <span className={currentTool === "dynamicDraw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("dynamicDraw")}>
+                        <InkPenIcon />
+                    </span>
+                    <span className={currentTool === "highlight" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("highlight")}>
+                        <HighlighterIcon />
+                    </span>
+                    <span className={currentTool === "erase" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("erase")}>
+                        <EraserIcon />
+                    </span>
                 </div>
 
-                <Draw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Draw>
-                <DynamicDraw {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></DynamicDraw>
-                <Erase {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Erase>
-                <Highlight {...{ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }}></Highlight>
+                <div className="tool-settings">
+                    <Draw {...properties}></Draw>
+                    <DynamicDraw {...properties}></DynamicDraw>
+                    <Erase {...properties}></Erase>
+                    <Highlight {...properties}></Highlight>
+                </div>
             </div>
 
             <div className="cursor" style={{top: y, left: x, display: mouseOnCanvas ? "block" : "none", padding: size / 2}}></div>

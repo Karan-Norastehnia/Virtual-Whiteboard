@@ -49,49 +49,79 @@ canvas {
   pointer-events: none;
 }
 
-.tool-select {
+.menu {
+  position: fixed;
+  top: 30px;
+  left: 50px;
+  transform: translateY(-50%);
+  // width: 200px;
+  height: 0;
+  // z-index: 999;
+}
+
+.tool-settings {
   display: flex;
+  background-color: hsl(0, 0%, 98%);
+  // box-shadow: 4px 4px 6px hsla(0, 0%, 10%, 0.1);
+  border: 0.8px solid hsl(0, 0%, 80%);
+  border-radius: 25px;
+  padding: 60px;
   gap: 15px;
   margin-bottom: 20px;
-  
+  // height: 150px;
+  // overflow-y: scroll;
+}
+
+.tool-select {
+  display: flex;
+  // background-color: hsl(0, 0%, 98%);
+  // box-shadow: 2px 2px 6px hsla(0, 0%, 10%, 0.1);
+  // border-radius: 10px;
+  gap: 5px;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+  // padding: 10px;
+
   span {
-    // border-style: solid;
-    // border-width: 0.8px;
+    text-align: center;
     border-radius: 25px;
-    // border-color: hsla(0, 0%, 10%, 0);
-    padding: 10px 20px 10px 20px;
+    border: 0.8px solid hsl(0, 0%, 80%);
+    padding: 7px 20px 7px 20px;
     cursor: pointer;
     transition: all 0.15s;
 
     &:hover {
-      // border-color: hsl(0, 0%, 10%);
-      background-color: hsl(180, 58%, 90%);
+      background-color: hsl(219, 100%, 92%);
+      // color: hsl(0, 0%, 85%);
+    }
+
+    &:active {
+      background-color: hsl(219, 100%, 88%);
     }
   }
 }
 
-.menu {
-  position: fixed;
+.inactive-tool {
+  flex: 1;
   background-color: hsl(0, 0%, 98%);
-  box-shadow: 2px 2px 6px hsla(0, 0%, 10%, 0.1);
-  top: 50%;
-  left: 50px;
-  transform: translateY(-50%);
-  // width: 200px;
-  height: 50%;
-  padding: 60px;
-  border-radius: 25px;
-  // z-index: 999;
+  // box-shadow: 2px 2px 9px hsl(0, 0%, 80%);
+}
+
+.active-tool {
+  flex: 3;
+  background-color: hsl(219, 100%, 92%);
+  // box-shadow: 2px 2px 1px hsl(219, 100%, 88%);
 }
 
 .section {
   margin-bottom: 20px;
+  width: 250px;
 }
 
 .title {
   display: flex;
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 500;
   justify-content: space-between;
   align-items: center;
   // border: solid;

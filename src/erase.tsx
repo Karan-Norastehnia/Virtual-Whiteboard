@@ -34,7 +34,7 @@ const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, ex
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Colour</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
                 </div>
 
                 <div className="content">

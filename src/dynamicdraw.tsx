@@ -23,7 +23,7 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
             if (context && mouseDown && mouseOnCanvas) {
                 context.globalCompositeOperation = "source-over";
                 context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
-                context.lineWidth = Math.min(Math.max(widthValue * (30 / dist + 1), widthValue), widthValue * 2);
+                context.lineWidth = Math.min(Math.max(widthValue * (10 / dist + 1), widthValue), widthValue * 2);
                 context.lineCap = "round";
                 context.lineJoin = "round";
                 context.beginPath();
@@ -41,7 +41,7 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Colour</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
                 </div>
 
                 <div className="content">
@@ -73,7 +73,7 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
             <div className="section">
                 <div onClick={expand} className="title">
                     <span>Stroke</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.6} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
                 </div>
 
                 <div className="content">
