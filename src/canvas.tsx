@@ -82,8 +82,9 @@ const Canvas = () => {
 
     const expand = (event: React.MouseEvent) => {
         const target = event.target as HTMLElement;
-        const svg = target.querySelector("svg") ?? target.parentElement?.querySelector("svg");
-        const section = svg?.parentElement?.parentElement?.querySelector(".content");
+        const svg = target.querySelector("svg"); // ?? target.parentElement?.querySelector("svg");
+        const section = svg?.parentElement?.parentElement?.querySelector(".content") ?? 
+            svg?.parentElement?.parentElement?.parentElement?.querySelector(".tool-settings");
 
         if (section) {
             if (section.classList.contains("condense")) {
@@ -129,7 +130,14 @@ const Canvas = () => {
                     <span className={currentTool === "erase" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("erase")}>
                         <EraserIcon />
                     </span>
+
+                    <div className="collapse" onClick={expand}>
+                        <svg width={32} height={32} 
+                            viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.3} 
+                            fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
+                    </div>
                 </div>
+
 
                 <div className="tool-settings">
                     <Draw {...properties}></Draw>
