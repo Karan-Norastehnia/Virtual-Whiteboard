@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Colour from "./colour";
+import Stroke from "./stroke";
 
 const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
     const [hueValue, setHueValue] = useState(220);
@@ -6,6 +8,8 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
     const [lightnessValue, setLightnessValue] = useState(5);
     const [widthValue, setWidthValue] = useState(2);
     const [smoothnessValue, setSmoothnessValue] = useState(0.4);
+
+    const widthRange = useRef({min: 2, max: 10});
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -37,61 +41,9 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
     }, [x, y, mouseDown]);
 
     return (
-        <div style={{display: currentTool === "dynamicDraw" ? "block" : "none"}}>
-            <div className="section">
-                <div onClick={expand} className="title">
-                    <span>Colour</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                </div>
-
-                <div className="content">
-                    <div className="colour-wheel-button" style={{backgroundColor: `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`}}></div>
-
-                    <div className="slider">
-                        <div>Hue</div>
-                        <input type="range" 
-                            onChange={(event) => {setHueValue(Number(event.target.value))}} 
-                            min={0} max={255} defaultValue={hueValue} id="hue" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Saturation</div>
-                        <input type="range" 
-                            onChange={(event) => {setSaturationValue(Number(event.target.value))}} 
-                            min={0} max={100} defaultValue={saturationValue} id="saturation" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Lightness</div>
-                        <input type="range" 
-                            onChange={(event) => {setLightnessValue(Number(event.target.value))}} 
-                            min={0} max={100} defaultValue={lightnessValue} id="lightness" />
-                    </div>
-                </div>
-            </div>
-
-            <div className="section">
-                <div onClick={expand} className="title">
-                    <span>Stroke</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                </div>
-
-                <div className="content">
-                    <div className="slider">
-                        <div>Width</div>
-                        <input type="range" 
-                            onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                            min={2} max={10} defaultValue={widthValue} id="width" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Smoothness</div>
-                        <input type="range" 
-                            onChange={(event) => {setSmoothnessValue(Number(event.target.value))}} 
-                            min={0.3} max={0.9} step={0.1} defaultValue={smoothnessValue} id="smoothness" />
-                    </div>
-                </div>
-            </div>
+        <div className="container" style={{display: currentTool === "dynamicDraw" ? "block" : "none"}}>
+            <Colour {...{ expand, hueValue, saturationValue, lightnessValue, setHueValue, setSaturationValue, setLightnessValue }} />
+            <Stroke {...{ expand, widthValue, smoothnessValue, setWidthValue, setSmoothnessValue, widthRange }} />
         </div>
     );
 };

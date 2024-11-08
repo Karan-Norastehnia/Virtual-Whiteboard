@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Colour from "./colour";
+import Stroke from "./stroke";
 
 const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
     const [hueValue, setHueValue] = useState(60);
     const [saturationValue, setSaturationValue] = useState(100);
     const [lightnessValue, setLightnessValue] = useState(60);
     const [widthValue, setWidthValue] = useState(20);
-    const [smoothnessValue, setSmoothnessValue] = useState(10);
+    const [smoothnessValue, setSmoothnessValue] = useState(0.1);
+
+    const widthRange = useRef({min: 10, max: 100});
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -13,6 +17,10 @@ const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y
         if (canvas && currentTool === "highlight") {
             const context = canvas.getContext("2d");
             const bounds = canvas.getBoundingClientRect();
+
+            const dist = (x - prevPos.current.x)**2 + (y-prevPos.current.y)**2;
+            const smoothedX = prevPos.current.x + (x - prevPos.current.x) * (1 - smoothnessValue);
+            const smoothedY = prevPos.current.y + (y - prevPos.current.y) * (1 - smoothnessValue);
 
             setSize(widthValue);
 
@@ -24,63 +32,18 @@ const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y
                 context.lineJoin = "round";
                 context.beginPath();
                 context.moveTo(prevPos.current.x - bounds.x, prevPos.current.y - bounds.y);
-                context.lineTo(x - bounds.x, y - bounds.y);
+                context.lineTo(smoothedX - bounds.x, smoothedY - bounds.y);
                 context.stroke();
             }
 
-            prevPos.current = { x: x, y: y };
+            prevPos.current = { x: smoothedX, y: smoothedY };
         }
     }, [x, y, mouseDown]);
 
     return (
-        <div style={{display: currentTool === "highlight" ? "block" : "none"}}>
-            <div className="section">
-                <div onClick={expand} className="title">
-                    <span>Colour</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                </div>
-
-                <div className="content">
-                    <div className="colour-wheel-button" style={{backgroundColor: `hsla(${hueValue}, ${saturationValue}%, ${lightnessValue}%, 0.5)`}}></div>
-
-                    <div className="slider">
-                        <div>Hue</div>
-                        <input type="range" 
-                            onChange={(event) => {setHueValue(Number(event.target.value))}} 
-                            min={0} max={255} defaultValue={hueValue} id="hue" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Saturation</div>
-                        <input type="range" 
-                            onChange={(event) => {setSaturationValue(Number(event.target.value))}} 
-                            min={0} max={100} defaultValue={saturationValue} id="saturation" />
-                    </div>
-
-                    <div className="slider">
-                        <div>Lightness</div>
-                        <input type="range" 
-                            onChange={(event) => {setLightnessValue(Number(event.target.value))}} 
-                            min={0} max={100} defaultValue={lightnessValue} id="lightness" />
-                    </div>
-                </div>
-            </div>
-
-            <div className="section">
-                <div onClick={expand} className="title">
-                    <span>Stroke</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                </div>
-
-                <div className="content">
-                    <div className="slider">
-                        <div>Width</div>
-                        <input type="range" 
-                            onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                            min={10} max={100} defaultValue={widthValue} id="width" />
-                    </div>
-                </div>
-            </div>
+        <div className="container" style={{display: currentTool === "highlight" ? "block" : "none"}}>
+            <Colour {...{ expand, hueValue, saturationValue, lightnessValue, setHueValue, setSaturationValue, setLightnessValue }} />
+            <Stroke {...{ expand, widthValue, smoothnessValue, setWidthValue, setSmoothnessValue, widthRange }} />
         </div>
     );
 };

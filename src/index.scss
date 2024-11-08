@@ -1,6 +1,16 @@
+$neutral-1: hsl(0, 0%, 98%);
+$neutral-2: hsl(0, 0%, 92%);
+$neutral-3: hsl(0, 0%, 85%);
+$neutral-4: hsl(0, 0%, 80%);
+$neutral-5: hsl(0, 0%, 60%);
+$neutral-6: hsl(0, 0%, 30%);
+
+$primary-1: hsl(246, 74%, 77%);
+
 @font-face {
   font-family: "Quicksand";
   src: url("fonts/Quicksand-VariableFont_wght.ttf");
+  color: hsl;
 }
 
 html, body {
@@ -9,15 +19,14 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: clip;
-  background: hsl(0, 0%, 92%);
-  color: hsl(0, 0%, 30%);
+  background: $neutral-2;
+  color: $neutral-6;
   font-family: "Quicksand", Verdana, sans-serif;
 }
 
 canvas {
   position: absolute;
   display: block;
-  // margin: auto;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -42,11 +51,14 @@ canvas {
   box-shadow: 0 0 3px hsla(0, 0, 80%, 0.4);
   border-style: solid;
   border-width: 0.8px;
-  border-color: hsl(0, 0%, 30%);
+  border-color: $neutral-6;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  // padding: 50px;
   pointer-events: none;
+}
+
+.container {
+  margin: auto;
 }
 
 .menu {
@@ -54,27 +66,24 @@ canvas {
   top: 30px;
   left: 50px;
   transform: translateY(-50%);
-  // width: 200px;
   height: 0;
-  // z-index: 999;
 }
 
 .tool-settings {
   display: flex;
-  background-color: hsl(0, 0%, 98%);
-  // box-shadow: 4px 4px 6px hsla(0, 0%, 10%, 0.1);
-  border: 0.8px solid hsl(0, 0%, 80%);
-  border-radius: 25px;
-  padding: 60px;
+  background-color: hsla(0, 0%, 98%, 0.5);
+  backdrop-filter: blur(10px);
+  border: 0.8px solid $neutral-4;
+  border-radius: 8px;
+  padding: 45px;
   gap: 15px;
   margin-bottom: 20px;
-  // height: 150px;
   overflow: hidden;
   transition: all 0.25s;
 
   &.condense {
-    height: 0;
-    padding: 0 60px 0 60px;
+    max-height: 0;
+    padding: 0 45px 0 45px;
     border-width: 0;
     opacity: 0;
   }
@@ -82,45 +91,53 @@ canvas {
 
 .tool-select {
   display: flex;
-  // background-color: hsl(0, 0%, 98%);
-  // box-shadow: 2px 2px 6px hsla(0, 0%, 10%, 0.1);
-  // border-radius: 10px;
   gap: 5px;
   justify-content: space-evenly;
   align-items: center;
-  // vertical-align: middle;
   margin-bottom: 20px;
-  // padding: 10px;
+  min-width: 360px;
 
-  span {
+  button {
     text-align: center;
-    border-radius: 25px;
-    border: 0.8px solid hsl(0, 0%, 80%);
+    border-radius: 8px;
+    background-color: $neutral-1;
+    border: 0.8px solid $neutral-4;
     padding: 7px 20px 7px 20px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s, outline 0s;
+
+    &:focus-visible {
+      outline: 0.8px solid $primary-1;
+    }
+
+    &.inactive-tool {
+      flex: 1;
+      background-color: $neutral-1;
+    }
+    
+    &.active-tool {
+      flex: 3;
+      background-color: $primary-1;
+      border-color: $neutral-5;
+
+      svg {
+        fill: $neutral-1;
+      }
+    }
 
     &:hover {
-      background-color: hsl(219, 100%, 92%);
-      // color: hsl(0, 0%, 85%);
+      background-color: $primary-1;
+      border-color: $neutral-5;
+
+      svg {
+        fill: $neutral-1;
+      }
     }
 
-    &:active {
-      background-color: hsl(219, 100%, 88%);
-    }
+    // &:active {
+    //   background-color: hsl(219, 100%, 88%);
+    // }
   }
-}
-
-.inactive-tool {
-  flex: 1;
-  background-color: hsl(0, 0%, 98%);
-  // box-shadow: 2px 2px 9px hsl(0, 0%, 80%);
-}
-
-.active-tool {
-  flex: 3;
-  background-color: hsl(219, 100%, 92%);
-  // box-shadow: 2px 2px 1px hsl(219, 100%, 88%);
 }
 
 .section {
@@ -133,12 +150,6 @@ canvas {
   font-weight: 500;
   justify-content: space-between;
   align-items: center;
-  // border: solid;
-  // border-width: 0 0 0.8px 0;
-  // border-color: #1a1a1a;
-  border: solid hsl(0, 0%, 80%);
-  border-width: 0 0 0.8px 0;
-  // padding: 5px;
   cursor: pointer;
 
   span {
@@ -149,34 +160,31 @@ canvas {
 .colour-wheel-button {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 0.8px;
-  background-color: hsl(220, 100%, 30%);
-  border-color: hsla(0, 0%, 10%, 0);
-  // box-shadow: 4px 4px 0 hsl(0, 0%, 80%);
+  border-radius: 50%;
   margin: 10px 6px 15px auto;
   cursor: pointer;
-
-  &:hover {
-    border-color: hsl(0, 0%, 10%);
-    // padding: 5px;
-    // box-shadow: 3px 3px 0 hsl(0, 0%, 80%);
-    // border-width: 5px;
-  }
 }
 
 .slider {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 30px;
-  margin-top: 5px;
+  // gap: 30px;
+  margin: 4px 2px 2px 2px;
+  // overflow: scroll;
 
   div {
     font-size: 0.9em;
-    color: hsl(0, 0%, 25%);
   }
+
+  input[type="range"] {
+    margin: 0 auto;
+  }
+}
+
+.input {
+  display: flex;
+  gap: 15px;
 }
 
 input[type="range"] {
@@ -184,52 +192,71 @@ input[type="range"] {
   appearance: none;
   background: transparent;
   cursor: pointer;
-  width: 120px;
+  width: 75px;
+
+  &:focus-visible {
+    outline: 0.8px solid $primary-1;
+  }
+
+  &::-webkit-slider-runnable-track {
+    background-color: $neutral-6;
+    border-radius: 0rem;
+    height: 0.8px;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -5.2px;
+    background-color: hsla(0, 0, 98%, 0.5);
+    border-radius: 25px;
+    border: 0.8px solid $neutral-6;
+    height: 13px;
+    width: 5px;
+  }
+
+  &::-moz-range-track {
+    background-color: $neutral-6;
+    border-radius: 0rem;
+    height: 0.8px;
+  }
+  
+  &::-moz-range-thumb {
+    background-color: hsla(0, 0, 98%, 0.5);
+    border-radius: 25px;
+    border: 0.8px solid $neutral-6;
+    height: 13px;
+    width: 5px;
+  }
 }
 
-input[type="range"]:focus {
-  outline: none;
-}
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  
+  font-family: "Quicksand", Verdana, sans-serif;
+  // background-color: $neutral-1;
+  background-color: hsla(0, 0, 98%, 0.5);
+  color: $neutral-6;
+  padding: 4px 8px 4px 8px;
+  border-radius: 4px;
+  border: 0.8px solid $neutral-4;
+  width: 25px;
+  // transition: all 0.15s;
 
-input[type="range"]::-webkit-slider-runnable-track {
-  background-color: hsl(0, 0%, 30%);
-  border-radius: 0rem;
-  height: 0.8px;
-}
+  &:focus {
+    outline: 0.8px solid $primary-1;
+  }
 
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  margin-top: -5.2px;
-  background-color: hsl(0, 0%, 98%);
-  border-style: solid;
-  border-radius: 50%;
-  border-width: 0.8px;
-  border-color: hsl(0, 0%, 30%);
-  height: 11px;
-  width: 11px;
-}
-
-input[type="range"]::-moz-range-track {
-  background-color: hsl(0, 0%, 30%);
-  border-radius: 0rem;
-  height: 0.8px;
-}
-
-input[type="range"]::-moz-range-thumb {
-  background-color: hsl(0, 0%, 98%);
-  border: none;
-  border-style: solid;
-  border-radius: 50%;
-  border-width: 0.8px;
-  border-color: hsl(0, 0%, 30%);
-  height: 11px;
-  width: 11px;
+  &::-webkit-inner-spin-button, 
+  &::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+  }
 }
 
 .content {
   overflow: hidden;
-  // max-height: fit-content;
   max-height: 150px;
   margin-bottom: 30px;
   transition: all 0.25s;
@@ -238,7 +265,6 @@ input[type="range"]::-moz-range-thumb {
     max-height: 0;
     margin-bottom: 15px;
     opacity: 0;
-    // transition: all 0.4s;
   }
 }
 
@@ -251,21 +277,17 @@ svg {
 }
 
 .collapse {
-  // padding: 3px;
-  // pointer-events: all;
   cursor: pointer;
 
   svg {
-    border-radius: 25px;
-    border: 0.8px solid hsl(0, 0%, 78%);
-    background-color: hsl(0, 0%, 94%);
+    border-radius: 50%;
+    border: 0.8px solid hsla(0, 0%, 0%, 0);
+    // background-color: $neutral-2;
   }
 
   &:hover {
-    border-color: hsl(0, 0%, 85%);
-
     svg {
-      border-color: hsl(0, 0%, 85%);
+      border-color: $neutral-4;
     }
   }
 }

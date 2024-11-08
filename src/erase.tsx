@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Stroke from "./stroke";
+
 
 const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, expand, currentTool }) => {
     const [widthValue, setWidthValue] = useState(10);
+
+    const widthRange = useRef({min: 5, max: 100});
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -30,22 +34,8 @@ const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, ex
     }, [x, y, mouseDown]);
 
     return (
-        <div style={{display: currentTool === "erase" ? "block" : "none"}}>
-            <div className="section">
-                <div onClick={expand} className="title">
-                    <span>Stroke</span>
-                    <svg width={24} height={24} viewBox="-5 -6 10 10" stroke="#000" strokeWidth={0.4} fill="none"><path d="M 2 -2 L 0 0 L -2 -2" /></svg>
-                </div>
-
-                <div className="content">
-                    <div className="slider">
-                        <div>Width</div>
-                        <input type="range" 
-                            onChange={(event) => {setWidthValue(Number(event.target.value))}} 
-                            min={5} max={100} defaultValue={15} id="hue" />
-                    </div>
-                </div>
-            </div>
+        <div className="container" style={{display: currentTool === "erase" ? "block" : "none"}}>
+            <Stroke {...{ expand, widthValue, setWidthValue, widthRange }} />
         </div>
     );
 };

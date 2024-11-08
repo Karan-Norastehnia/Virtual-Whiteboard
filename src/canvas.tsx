@@ -117,19 +117,18 @@ const Canvas = () => {
 
             <div className="menu">
                 <div className="tool-select">
-                    <span className={currentTool === "draw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("draw")}>
-                        {/* <img src={PenIcon} alt="Pen" /> */}
+                    <button className={currentTool === "draw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("draw")}>
                         <PenIcon />
-                    </span>
-                    <span className={currentTool === "dynamicDraw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("dynamicDraw")}>
+                    </button>
+                    <button className={currentTool === "dynamicDraw" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("dynamicDraw")}>
                         <InkPenIcon />
-                    </span>
-                    <span className={currentTool === "highlight" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("highlight")}>
+                    </button>
+                    <button className={currentTool === "highlight" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("highlight")}>
                         <HighlighterIcon />
-                    </span>
-                    <span className={currentTool === "erase" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("erase")}>
+                    </button>
+                    <button className={currentTool === "erase" ? "active-tool" : "inactive-tool"} onClick={() => setCurrentTool("erase")}>
                         <EraserIcon />
-                    </span>
+                    </button>
 
                     <div className="collapse" onClick={expand}>
                         <svg width={32} height={32} 
@@ -140,6 +139,7 @@ const Canvas = () => {
 
 
                 <div className="tool-settings">
+
                     <Draw {...properties}></Draw>
                     <DynamicDraw {...properties}></DynamicDraw>
                     <Erase {...properties}></Erase>
