@@ -24,7 +24,7 @@ const DynamicDraw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x,
 
             setSize(widthValue);
 
-            if (context && mouseDown && mouseOnCanvas) {
+            if (context && mouseDown.current && mouseOnCanvas.current) {
                 context.globalCompositeOperation = "source-over";
                 context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
                 context.lineWidth = Math.min(Math.max(widthValue * (10 / dist + 1), widthValue), widthValue * 2);

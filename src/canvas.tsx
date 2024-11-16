@@ -7,6 +7,7 @@ import { ReactComponent as PenIcon } from "./icons/pen.svg";
 import { ReactComponent as InkPenIcon } from "./icons/inkpen.svg";
 import { ReactComponent as HighlighterIcon } from "./icons/highlighter.svg";
 import { ReactComponent as EraserIcon } from "./icons/eraser.svg";
+import { ReactComponent as GithubIcon } from "./icons/github.svg";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -14,28 +15,71 @@ const Canvas = () => {
 
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
-    const [mouseDown, setMouseDown] = useState(false);
-
+    
     const prevPos = useRef({ x: x, y: y });
+    const mouseDown = useRef(false);
+    const mouseOnCanvas = useRef(false);
 
-    const [mouseOnCanvas, setMouseOnCanvas] = useState(false);
+    const step = useRef(-1);
+    const editHistory = useRef<object[]>([]);
+
     const [currentTool, setCurrentTool] = useState("draw");
     const [size, setSize] = useState(2);
 
     const width = 2048;
     const height = 2048;
 
+    const endEdit = () => {
+        const canvas = canvasRef.current;
+
+        canvas?.toBlob((blob) => {
+            if (blob && mouseOnCanvas.current) {
+                step.current += 1;
+                editHistory.current = editHistory.current.slice(0, step.current);
+                editHistory.current.push(blob);
+
+            }
+        });
+    };
+
+    const navigateHistory = (next: number) => {
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext("2d");
+        const img = new Image();
+
+        step.current = Math.min(Math.max(step.current + next, 0), editHistory.current.length - 1);
+
+        const url = URL.createObjectURL(editHistory.current[step.current] as Blob);
+
+        img.onload = () => {
+            context?.clearRect(0, 0, width, height);
+            context?.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+        };
+
+        img.src = url;
+    };
+
+    const loadCanvas = () => {
+        endEdit();
+    };
+
     useEffect(() => {
         drawGrid();
+        loadCanvas();
 
         const handleMouseDown = (event: MouseEvent) => {
             if (event.button === 0) {
-                setMouseDown(true);
+                mouseDown.current = true;
             }
         }
 
         const handleMouseUp = (event: MouseEvent) => {
-            setMouseDown(false);
+            mouseDown.current = false;
+
+            if (event.button === 0) {
+                endEdit();
+            }
         }
 
         const handleMouseMove = (event: MouseEvent) => {
@@ -110,8 +154,8 @@ const Canvas = () => {
             <div className="canvas-container">
                 <canvas ref={gridRef} width={width} height={height} id="grid-canvas"></canvas>
                 <canvas ref={canvasRef} 
-                    onMouseLeave={() => setMouseOnCanvas(false)} 
-                    onMouseOver={() => setMouseOnCanvas(true)} 
+                    onMouseLeave={() => mouseOnCanvas.current = false} 
+                    onMouseOver={() => mouseOnCanvas.current = true} 
                     width={width} height={height} id="main"></canvas>
             </div>
 
@@ -137,9 +181,7 @@ const Canvas = () => {
                     </div>
                 </div>
 
-
                 <div className="tool-settings">
-
                     <Draw {...properties}></Draw>
                     <DynamicDraw {...properties}></DynamicDraw>
                     <Erase {...properties}></Erase>
@@ -147,7 +189,16 @@ const Canvas = () => {
                 </div>
             </div>
 
-            <div className="cursor" style={{top: y, left: x, display: mouseOnCanvas ? "block" : "none", padding: size / 2}}></div>
+            <div className="edit-history">
+                <button onClick={() => navigateHistory(-1)}>Undo</button>
+                <button onClick={() => navigateHistory(1)}>Redo</button>
+            </div>
+
+            <a href="https://github.com/Karan-Norastehnia/Virtual-Whiteboard" target="_blank" className="repo-link">
+                <GithubIcon />
+            </a>
+
+            <div className="cursor" style={{top: y, left: x, display: mouseOnCanvas.current ? "block" : "none", padding: size / 2}}></div>
         </>
     );
 };

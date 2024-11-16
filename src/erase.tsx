@@ -16,7 +16,7 @@ const Erase = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, ex
 
             setSize(widthValue);
             
-            if (context && mouseDown && mouseOnCanvas) {
+            if (context && mouseDown.current && mouseOnCanvas.current) {
                 // context.clearRect(x - bounds.x - (widthValue / 2), y - bounds.y - (widthValue / 2), widthValue, widthValue);
                 context.globalCompositeOperation = "destination-out";
                 context.strokeStyle = "hsl(0, 0%, 0%)";

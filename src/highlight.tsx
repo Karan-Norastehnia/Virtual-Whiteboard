@@ -24,7 +24,7 @@ const Highlight = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y
 
             setSize(widthValue);
 
-            if (context && mouseDown && mouseOnCanvas) {
+            if (context && mouseDown.current && mouseOnCanvas.current) {
                 context.globalCompositeOperation = "source-over";
                 context.strokeStyle = `hsla(${hueValue}, ${saturationValue}%, ${lightnessValue}%, 0.5)`;
                 context.lineWidth = widthValue;

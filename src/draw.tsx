@@ -24,7 +24,7 @@ const Draw = ({ setSize, canvasRef, mouseDown, mouseOnCanvas, prevPos, x, y, exp
 
             setSize(widthValue);
 
-            if (context && mouseDown && mouseOnCanvas) {
+            if (context && mouseDown.current && mouseOnCanvas.current) {
                 context.globalCompositeOperation = "source-over";
                 context.strokeStyle = `hsl(${hueValue}, ${saturationValue}%, ${lightnessValue}%)`;
                 context.lineWidth = widthValue;
