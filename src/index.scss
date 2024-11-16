@@ -80,7 +80,7 @@ canvas {
 
 .edit-history {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   position: fixed;
   bottom: 30px;
   left: 50px;
@@ -160,7 +160,27 @@ button {
 
 .edit-history button {
   width: fit-content;
-  padding: 12px 20px 12px 20px;
+  padding: 7px 12px 7px 12px;
+
+  &:hover::after {
+    display: block;
+    position: absolute;
+    padding: 5px;
+    border: 0.8px solid $neutral-4;
+    border-radius: 8px;
+    background-color: $neutral-3;
+    color: $neutral-6;
+    font-family: "Quicksand";
+    font-size: 0.9em;
+  }
+
+  &:first-child:hover::after {
+    content: "Ctrl+Z";
+  }
+
+  &:last-child:hover::after {
+    content: "Ctrl+Y";
+  }
 }
 
 .section {

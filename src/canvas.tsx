@@ -3,11 +3,16 @@ import Draw from "./draw";
 import DynamicDraw from "./dynamicdraw";
 import Highlight from "./highlight";
 import Erase from "./erase";
+
 import { ReactComponent as PenIcon } from "./icons/pen.svg";
 import { ReactComponent as InkPenIcon } from "./icons/inkpen.svg";
 import { ReactComponent as HighlighterIcon } from "./icons/highlighter.svg";
 import { ReactComponent as EraserIcon } from "./icons/eraser.svg";
+
 import { ReactComponent as GithubIcon } from "./icons/github.svg";
+
+import { ReactComponent as RedoIcon } from "./icons/redo.svg";
+import { ReactComponent as UndoIcon } from "./icons/undo.svg";
 
 const Canvas = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -20,7 +25,7 @@ const Canvas = () => {
     const mouseDown = useRef(false);
     const mouseOnCanvas = useRef(false);
 
-    const step = useRef(-1);
+    const step = useRef(0);
     const editHistory = useRef<object[]>([]);
 
     const [currentTool, setCurrentTool] = useState("draw");
@@ -28,6 +33,8 @@ const Canvas = () => {
 
     const width = 2048;
     const height = 2048;
+
+    const maxUndoDepth = 20;
 
     const endEdit = () => {
         const canvas = canvasRef.current;
@@ -38,6 +45,9 @@ const Canvas = () => {
                 editHistory.current = editHistory.current.slice(0, step.current);
                 editHistory.current.push(blob);
 
+                if (editHistory.current.length > maxUndoDepth) {
+                    editHistory.current = editHistory.current.slice(-1 * maxUndoDepth, editHistory.current.length)
+                }
             }
         });
     };
@@ -52,16 +62,26 @@ const Canvas = () => {
         const url = URL.createObjectURL(editHistory.current[step.current] as Blob);
 
         img.onload = () => {
-            context?.clearRect(0, 0, width, height);
-            context?.drawImage(img, 0, 0);
-            URL.revokeObjectURL(url);
+
+            if (context) {
+                context.globalCompositeOperation = "source-over";
+                context?.clearRect(0, 0, width, height);
+                context?.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+            }
         };
 
         img.src = url;
     };
 
     const loadCanvas = () => {
-        endEdit();
+        const canvas = canvasRef.current;
+
+        canvas?.toBlob((blob) => {
+            if (blob) {
+                editHistory.current = [blob];
+            }
+        });
     };
 
     useEffect(() => {
@@ -87,14 +107,28 @@ const Canvas = () => {
             setY(event.clientY);
         };
 
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.ctrlKey) {
+                if (event.code === "KeyZ") {
+                    navigateHistory(-1);
+                } else if (event.code === "KeyY") {
+                    navigateHistory(1);
+                }
+            }
+        };
+
         window.addEventListener("mousedown", handleMouseDown);
         window.addEventListener("mouseup", handleMouseUp);
         window.addEventListener("mousemove", handleMouseMove);
+
+        window.addEventListener("keydown", handleKeyDown);
 
         return () => {
             window.removeEventListener("mousedown", handleMouseDown);
             window.removeEventListener("mouseup", handleMouseUp);
             window.removeEventListener("mousemove", handleMouseMove);
+
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
 
@@ -190,8 +224,12 @@ const Canvas = () => {
             </div>
 
             <div className="edit-history">
-                <button onClick={() => navigateHistory(-1)}>Undo</button>
-                <button onClick={() => navigateHistory(1)}>Redo</button>
+                <button onClick={() => navigateHistory(-1)}>
+                    <UndoIcon />
+                </button>
+                <button onClick={() => navigateHistory(1)}>
+                    <RedoIcon />
+                </button>
             </div>
 
             <a href="https://github.com/Karan-Norastehnia/Virtual-Whiteboard" target="_blank" className="repo-link">
