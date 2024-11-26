@@ -232,7 +232,7 @@ const Canvas = () => {
                 </button>
             </div>
 
-            <a href="https://github.com/Karan-Norastehnia/Virtual-Whiteboard" target="_blank" className="repo-link">
+            <a href="https://github.com/knorastehnia/Virtual-Whiteboard" target="_blank" className="repo-link">
                 <GithubIcon />
             </a>
 
